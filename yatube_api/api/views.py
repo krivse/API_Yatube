@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import LimitOffsetPagination
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 
 from posts.models import Post, Group, Comment, Follow
@@ -73,14 +73,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated|IsFollowingPermission]
+    permission_classes = [IsAuthenticated]
     pagination_class = None
-    filter_backends = (DjangoFilterBackend,)
-    search_fields_fields = ('follower',)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('following__username', 'user__username')
 
     def get_queryset(self):
         """GET - получение списка подписчиков."""
-        return Follow.objects.filter(user=self.request.user.id)
+        return self.request.user.follower
 
     def perform_create(self, serializer):
         """POST - подписка на пользователя."""
