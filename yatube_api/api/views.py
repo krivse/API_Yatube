@@ -5,7 +5,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 
-from posts.models import Post, Group, Comment, Follow
+from posts.models import Post, Group, Comment
 from .serializers import PostSerializer, GroupSerializer, CommentSerializer
 from .serializers import FollowSerializer
 
@@ -38,19 +38,16 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     """GET - получение списка групп / информации о группе по id."""
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    pagination_class = None
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     """GET - получение списка комментариев / комментариев по id."""
     serializer_class = CommentSerializer
-    pagination_class = None
 
     def get_queryset(self):
         """GET - получаем список комментариев поста или создаём новый."""
         post_id = self.kwargs.get("post_id")
-        new_queryset = Comment.objects.filter(post=post_id)
-        return new_queryset
+        return Comment.objects.filter(post=post_id)
 
     def perform_create(self, serializer):
         """POST - пост записи."""
@@ -61,7 +58,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         """GET, PUT, PATCH - автор получает или редактирует по id."""
         if serializer.instance.author != self.request.user:
             raise PermissionDenied('Изменение чужого контента запрещено!')
-        super(CommentViewSet, self).perform_update(serializer)
+        super().perform_update(serializer)
 
     def perform_destroy(self, instance):
         """DELETE - автор удаляет коммент по id."""
@@ -71,10 +68,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class FollowViewSet(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = None
     filter_backends = (filters.SearchFilter,)
     search_fields = ('following__username', 'user__username')
 
@@ -85,3 +80,15 @@ class FollowViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """POST - подписка на пользователя."""
         serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        """GET, PUT, PATCH - автор получает или редактирует по id."""
+        if serializer.instance.user == self.request.user:
+            super().perform_update(serializer)
+        raise PermissionDenied('Изменение чужих подписок запрещено!')
+
+    def perform_destroy(self, instance):
+        """DELETE - удаление подписки по id."""
+        if instance.user == self.request.user:
+            instance.delete()
+        raise PermissionDenied('Удаление чужих подписок запрещено!')
