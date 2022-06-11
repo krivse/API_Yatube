@@ -4,8 +4,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from posts.models import Post, Group, Comment, Follow
+
+from posts.models import Post, Group, Comment
 from .serializers import PostSerializer, GroupSerializer, CommentSerializer
 from .serializers import FollowSerializer
 
