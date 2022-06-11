@@ -4,8 +4,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
-
-from posts.models import Post, Group, Comment
+from rest_framework.response import Response
+from posts.models import Post, Group, Comment, Follow
 from .serializers import PostSerializer, GroupSerializer, CommentSerializer
 from .serializers import FollowSerializer
 
@@ -80,15 +80,3 @@ class FollowViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """POST - подписка на пользователя."""
         serializer.save(user=self.request.user)
-
-    def perform_update(self, serializer):
-        """GET, PUT, PATCH - автор получает или редактирует по id."""
-        if serializer.instance.user == self.request.user:
-            super().perform_update(serializer)
-        raise PermissionDenied('Изменение чужих подписок запрещено!')
-
-    def perform_destroy(self, instance):
-        """DELETE - удаление подписки по id."""
-        if instance.user == self.request.user:
-            instance.delete()
-        raise PermissionDenied('Удаление чужих подписок запрещено!')
