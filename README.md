@@ -1,8 +1,7 @@
 # API_yatube
 
-`Python3.9` `Django2.2.16` `DRF3.12.4` `Djangorestframework-simplejwt4.7.2`
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white) ![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray) ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 ### Построение RESTful API для Yatube
-### Описание
 
 Проект-продолжение проекта Yatube - блога, к которому создали API для обработки запросов к нему. В данном проекте рассматриваются виды запросов: GET, POST, PATCH, PUT, DELETE
 
@@ -14,7 +13,7 @@
 
 - Обработка запросов для групп
 
-К данному проекту прикручена документация в пакете static, при запуске проекта (runserver), можно перейти на эндпоинт .../redoc, чтобы ознакомиться с документацией
+К данному проекту прикручена документация в пакете static, при запуске проекта (runserver), чтобы с ней ознакомиться нужно перейти по адресу http://127.0.0.1/redoc.
 
 
 ### Как запустить проект:
